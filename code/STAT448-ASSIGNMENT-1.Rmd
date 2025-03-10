@@ -1,0 +1,107 @@
+---
+title: "STAT448 Assignment 1"
+author: "David Ewing"
+date: "`r Sys.Date()`"
+output:
+  pdf_document:
+    latex_engine: xelatex
+    number_sections: true
+geometry: a4paper, top=2cm
+fontsize: 12pt
+header-includes:
+  - \renewcommand{\thesection}{\arabic{section}}
+  - \renewcommand{\thesubsection}{\arabic{section}.\alph{subsection}}
+---
+
+# Question 1 - Algebraic Method
+
+Observed values :
+
+\[
+\begin{aligned}
+(Y) & : \{3, 9, 15\} - \text{Response Variable }  \\
+ (X) & : \{6, 7, 8\} - \text{Explanatory Variable }\\
+\text{Model} & : Y = \beta_0 + \beta_1 X + \epsilon
+\end{aligned}
+\]
+
+## Compute ordinary least squares estimates of the coefficients by hand
+
+The least squares estimates of \( \beta_0 \) and \( \beta_1 \) are given by:
+
+\[
+\begin{aligned}
+\hat{\beta_1} &= \frac{\sum (X_i - \bar{X}) (Y_i - \bar{Y})}{\sum (X_i - \bar{X})^2} \\
+\hat{\beta_0} &= \bar{Y} - \hat{\beta_1} \bar{X}
+\end{aligned}
+\]
+
+ 
+ Mean Calculation
+```{r}
+x <- c(6, 7, 8)
+y <- c(3, 9, 15)
+x_bar <- mean(x)
+y_bar <- mean(y)
+x_bar
+y_bar
+```
+
+\newpage
+
+ Compute \( \hat{\beta_1} \)
+```{r}
+numerator <- sum((x - x_bar) * (y - y_bar))
+denominator <- sum((x - x_bar)^2)
+beta1_hat <- numerator / denominator
+beta1_hat
+```
+
+ Compute \( \hat{\beta_0} \)
+```{r}
+beta0_hat <- y_bar - beta1_hat * x_bar
+beta0_hat
+```
+
+## Calculate by hand the estimates of the residuals
+
+The residuals are given by:
+\[
+\hat{\epsilon}_i = Y_i - (\hat{\beta_0} + \hat{\beta_1} X_i)
+\]
+
+```{r}
+fitted_values <- beta0_hat + beta1_hat * x
+residuals <- y - fitted_values
+residuals
+```
+
+## (d) Compute Coefficients using Matrix Algebra in R
+
+We express the model in matrix form:
+\[
+Y = X\beta + \epsilon
+\]
+where
+\[
+X = \begin{bmatrix}1 & 6\\ 1 & 7\\ 1 & 8\end{bmatrix}, \quad Y = \begin{bmatrix}3\\ 9\\ 15\end{bmatrix}
+\]
+
+The OLS estimator is:
+\[
+\hat{\beta} = (X^T X)^{-1} X^T Y
+\]
+
+```{r}
+X_matrix <- cbind(1, x)
+Y_matrix <- matrix(y, ncol = 1)
+beta_hat_matrix <- solve(t(X_matrix) %*% X_matrix) %*% t(X_matrix) %*% Y_matrix
+beta_hat_matrix
+```
+
+## (e) Compute Coefficients using `lm()` in R
+
+```{r}
+lm_model <- lm(y ~ x)
+summary(lm_model)
+```
