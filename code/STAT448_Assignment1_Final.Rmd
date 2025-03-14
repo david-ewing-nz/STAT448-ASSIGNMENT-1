@@ -1,0 +1,708 @@
+---
+title: "STAT448_Assignment1"
+author: " David Ewing 82171149 ,
+          Lillian Lee 32198314"
+date: "2025-02-25"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Question 1
+
+Three observations for a random response variable Y are {3, 9, 15}; the corresponding values observed for the explanatory variable X are {6, 7, 8}. Assume a linear model:$\mathbf{Y} = \boldsymbol{\beta}_0 + \boldsymbol{\beta}_1 \mathbf{X} + \boldsymbol{\epsilon}$
+
+### (a) Compute Ordinary Least Squares Estimates of the Coefficients $\hat{\boldsymbol{\beta_0}}$ and $\hat{\boldsymbol{\beta_1}}$ Using Linear Algebra Calculations by Hand
+
+#### Step 1: Construct Design Matrix $\boldsymbol{X}$ and Response Vector $\boldsymbol{Y}$
+
+The design matrix $X$ includes a column of 1's for the intercept and the observed values of $\boldsymbol{X}$. The response vector $\boldsymbol{Y}$ contains the observed values of $\boldsymbol{Y}$.
+
+$$
+\boldsymbol{X} = \begin{bmatrix} 1 & 6 \\ 1 & 7 \\ 1 & 8 \end{bmatrix}, \quad
+\boldsymbol{Y} = \begin{bmatrix} 3 \\ 9 \\ 15 \end{bmatrix}
+$$
+
+#### Step 2 : Compute $\boldsymbol{X'X}$ and $\boldsymbol{X'Y}$
+
+The matrix $\boldsymbol{X'X}$ and vector $\boldsymbol{X'Y}$ are calculated as follows:
+
+$$
+\boldsymbol{X'X} = \begin{bmatrix} 
+n & \sum x_i \\ 
+\sum x_i & \sum x_i^2 
+\end{bmatrix} 
+= \begin{bmatrix} 1+1+1 & 6+7+8 \\ 6+7+8 & 6^2+7^2+8^2 \end{bmatrix} = \begin{bmatrix} 3 & 21 \\ 21 & 149 \end{bmatrix}
+$$
+
+$$
+\boldsymbol{X'Y} = \begin{bmatrix} 
+\sum y_i \\ 
+\sum x_i y_i 
+\end{bmatrix} =\begin{bmatrix} 3+9+15 \\ 66 \times 3 + 7 \times 9 + 8 \times 15  \end{bmatrix} = \begin{bmatrix} 27 \\ 201 \end{bmatrix}
+$$
+
+#### Step 3: Compute $\boldsymbol{X'X}^{-1}$
+
+The inverse of $\boldsymbol{X'X}^{-1}$ is calculated as:
+
+$$
+\boldsymbol{X'X}^{-1} = \frac{1}{n \sum (x_i - \bar{x})^2} \begin{bmatrix} 
+\sum x_i^2 & -\sum x_i \\ 
+-\sum x_i & n 
+\end{bmatrix}
+$$
+
+Substituting the values:
+
+$$
+\boldsymbol{X'X}^{-1} = \frac{1}{3 \left[(6-7)^2 + (7-7)^2 + (8-7)^2\right]} \begin{bmatrix} 
+149 & -21 \\ 
+-21 & 3 
+\end{bmatrix}
+$$
+
+Calculating the denominator:
+
+$$
+3 \left[(6-7)^2 + (7-7)^2 + (8-7)^2\right] = 3 \left[1 + 0 + 1\right] = 6
+$$
+
+Thus:
+
+$$
+\boldsymbol{X'X}^{-1} = \frac{1}{6} \begin{bmatrix} 
+149 & -21 \\ 
+-21 & 3 
+\end{bmatrix} = \begin{bmatrix} 
+\frac{149}{6} & -\frac{21}{6} \\ 
+-\frac{21}{6} & \frac{3}{6} 
+\end{bmatrix} = \begin{bmatrix} 
+\frac{149}{6} & -\frac{7}{2} \\ 
+-\frac{7}{2} & \frac{1}{2} 
+\end{bmatrix}
+$$
+
+#### Step 4: Compute $\hat{\boldsymbol{\beta}} = \mathbf{(X' X)^{-1} X' Y}$
+
+The OLS estimates of the coefficients are:
+
+$$
+\hat{\boldsymbol{\beta}} = \mathbf{(X' X)^{-1} X' Y}
+$$
+
+Substituting the values:
+
+$$
+\hat{\boldsymbol{\beta}} = \begin{bmatrix} 
+\frac{149}{6} & -\frac{7}{2} \\ 
+-\frac{7}{2} & \frac{1}{2} 
+\end{bmatrix} \begin{bmatrix} 
+27 \\ 
+201 
+\end{bmatrix}
+$$
+
+Performing the matrix multiplication:
+
+$$
+\hat{\boldsymbol{\beta}} = \begin{bmatrix} 
+\frac{149}{6} \times 27 + \left(-\frac{7}{2}\right) \times 201 \\ 
+-\frac{7}{2} \times 27 + \frac{1}{2} \times 201 
+\end{bmatrix} = \begin{bmatrix} 
+-33 \\ 
+6 
+\end{bmatrix}
+$$
+
+------------------------------------------------------------------------
+
+#### Answer For Question 1 (a)
+
+The OLS estimates of the coefficients are:
+
+$$
+\hat{\boldsymbol{\beta}} = \begin{bmatrix} \hat{\beta}_0 \\ \hat{\beta}_1 \end{bmatrix} = \begin{bmatrix} -33 \\ 6 \end{bmatrix}
+$$
+
+Through matrix calculations, we computed the OLS estimates of the coefficients:
+
+$$
+\hat{\boldsymbol{\beta_0}}= -33 \qquad \hat{\boldsymbol{\beta_1}} = 6
+$$
+
+### (b) Calculate by Hand the Estimates of the Residuals $\hat{\epsilon}$
+
+The residuals $\hat{\epsilon}$ are the differences between the observed values $Y$ and the predicted values $\hat{Y}$. The predicted values $\hat{Y}$ are calculated as:
+
+$$
+\hat{Y} = X \hat{\boldsymbol{\beta}}
+$$
+
+Given the OLS estimates $\hat{\boldsymbol{\beta}} = \begin{pmatrix} -33 \\ 6 \end{pmatrix}$, we can compute $\hat{Y}$:
+
+$$
+\hat{Y} = X \hat{\boldsymbol{\beta}} = \begin{bmatrix} 1 & 6 \\ 1 & 7 \\ 1 & 8 \end{bmatrix} \begin{bmatrix} -33 \\ 6 \end{bmatrix}
+$$
+
+Performing the matrix multiplication:
+
+$$
+\hat{Y} = \begin{bmatrix} 
+1 \times (-33) + 6 \times 6 \\ 
+1 \times (-33) + 7 \times 6 \\ 
+1 \times (-33) + 8 \times 6 
+\end{bmatrix} = \begin{bmatrix} 
+-33 + 36 \\ 
+-33 + 42 \\ 
+-33 + 48 
+\end{bmatrix} = \begin{bmatrix} 
+3 \\ 
+9 \\ 
+15 
+\end{bmatrix}
+$$
+
+Now, the residuals $\hat{\epsilon}$ are calculated as:
+
+$$
+\hat{\epsilon} = Y - \hat{Y} = \begin{bmatrix} 3 \\ 9 \\ 15 \end{bmatrix} - \begin{bmatrix} 3 \\ 9 \\ 15 \end{bmatrix} = \begin{bmatrix} 0 \\ 0 \\ 0 \end{bmatrix}
+$$
+
+------------------------------------------------------------------------
+
+#### Answer For Question 1 (b)
+
+The estimates of the residuals are:
+
+$$
+\hat{\epsilon} = \begin{bmatrix} 0 \\ 0 \\ 0 \end{bmatrix}
+$$
+
+The residuals $\hat{\epsilon}$ are calculated as the difference between the observed values $Y$ and the predicted values $\hat{Y}$. In this case, the residuals are all zero, indicating a perfect fit of the model to the data.
+
+### (c) Perform the Same Matrix Algebra Calculations of Part (a) and (b) Using R
+
+#### Step 1: Construct Design Matrix $\boldsymbol{X}$ and Response Vector $\boldsymbol{Y}$
+
+```{r}
+# Create the design matrix X and Y
+X <- matrix(c(1, 1, 1, 6, 7, 8), nrow = 3, ncol = 2)
+Y <- matrix(c(3, 9, 15), nrow = 3, ncol = 1)
+
+# Display X and Y
+X
+Y
+```
+
+#### Step 2 : Compute $\boldsymbol{X'X}$ and $\boldsymbol{X'Y}$
+
+```{r}
+# Compute X' X and X' Y
+XTX <- t(X) %*% X
+XTY <- t(X) %*% Y
+
+# Display X' X and X' Y
+XTX
+XTY
+```
+
+#### Step 3: Compute $\boldsymbol{X'X}^{-1}$
+
+```{r}
+# Compute (X' X)^{-1}
+XTX_inv <- solve(XTX)
+
+# Display (X' X)^{-1}
+XTX_inv
+```
+
+#### Step 4: Compute $\hat{\boldsymbol{\beta}} = \mathbf{(X' X)^{-1} X' Y}$
+
+```{r}
+# Compute beta_hat = (X' X)^{-1} X' Y
+beta_hat <- XTX_inv %*% XTY
+
+# Display beta
+beta_hat
+```
+
+#### Step 5: Compute Predicted Values $\hat{\boldsymbol{Y}}$
+
+```{r}
+# Compute predicted values Y_hat
+Y_hat <- X %*% beta_hat
+
+# Display Y_hat
+Y_hat
+```
+
+#### Step 6: Calculate the Estimates of the Residuals $\hat{\epsilon}$
+
+```{r}
+# Compute residuals epsilon_hat
+epsilon_hat <- Y - Y_hat
+
+# Display epsilon_hat
+epsilon_hat
+
+all.equal(Y, Y_hat)
+```
+
+------------------------------------------------------------------------
+
+#### Answer For Question 1 (c) :
+
+The residuals $\hat{\epsilon}$ are not exactly zero due to the limitations of floating-point arithmetic in computers.These tiny differences (on the order of 10\^-13) negligible and can be treated as numerical zero.
+
+The model fits the data almost perfectly, as evidenced by the extremely small residuals.
+
+### (d) Estimate the Coefficients Using the Function `lm` in R
+
+The `lm` function in R is used to fit a linear model and estimate the coefficients $\hat{\boldsymbol{\beta_0}}$ and $\hat{\boldsymbol{\beta_1}}$.
+
+#### Step 1: Fit the Linear Model
+
+We use the `lm` function to fit the linear model:
+
+```{r}
+# Fit the linear model
+model <- lm(Y ~ X[, 2])
+
+# Display the model summary
+summary(model)
+
+```
+
+#### Step 2: Extract the Coefficients The coefficients can be extracted directly from the model object:
+
+```{r}
+# Extract coefficients
+coefficients(model)
+```
+
+#### Step 3: Verify the Results The coefficients estimated using lm should match the results from the manual calculations in part (a).
+
+```{r}
+# Compare with manual calculations
+beta_manual <- c(-33, 6)
+beta_lm <- coefficients(model)
+
+# Check if the results are equal
+all.equal(beta_manual, unname(beta_lm))
+```
+
+------------------------------------------------------------------------
+
+#### Answer For Question 1 (d) :
+
+This result confirms that the coefficients estimated using lm are identical to the manual calculations performed in Question 1 part (a) and part (c), confirming the correctness of both approaches.
+
+# Question 2 
+In the context of question 1, consider the case where the values observed for the explanatory variable X are {5, 5, 5}.
+
+### (a) What happens to the coefficient estimates?
+
+#### Step 1: Construct Design Matrix $\boldsymbol{X}$ and Response Vector $\boldsymbol{Y}$
+
+The design matrix $X$ includes a column of 1's for the intercept and the observed values of $X$. The response vector $Y$ contains the observed values of $Y$.
+
+$$
+X = \begin{bmatrix} 1 & 5 \\ 1 & 5 \\ 1 & 5 \end{bmatrix}, \quad
+Y = \begin{bmatrix} 3 \\ 9 \\ 15 \end{bmatrix}
+$$
+
+```{r}
+# Construct X and Y
+X <- matrix(c(1, 1, 1, 5, 5, 5), nrow = 3, ncol = 2)
+Y <- matrix(c(3, 9, 15), nrow = 3, ncol = 1)
+
+# Display X and Y
+X
+Y
+```
+
+#### Step 2:Compute $\boldsymbol{X'X}$ and $\boldsymbol{X'Y}$
+
+```{r}
+# Compute X' X and X' Y
+XTX <- t(X) %*% X
+XTY <- t(X) %*% Y
+
+# Display X' X and X' Y
+XTX
+XTY
+```
+
+#### Step 3: Compute $\boldsymbol{X'X}^{-1}$
+
+```{r}
+# Attempt to compute (X' X)^{-1}
+XTX_inv <- try(solve(XTX), silent = TRUE)
+
+# Display the result
+XTX_inv
+```
+
+------------------------------------------------------------------------
+
+#### Answer For Question 2 (a) :
+
+Since $\boldsymbol{X'X}^{-1}$ is singular, the OLS estimates of the coefficients $\hat{\boldsymbol{\beta}}$ cannot be computed using the formula $\hat{\boldsymbol{\beta}} = \mathbf{(X' X)^{-1} X' Y}$ This is because the explanatory variable has no variability (all values are the same), making it impossible to estimate the slope $\hat{\boldsymbol{\beta_1}}$.
+
+### (b). Using appropriate terminology give a statistical explanation of this situation.
+
+------------------------------------------------------------------------
+
+#### Answer For Question 2 (b) :
+
+The situation where all values of the explanatory variable $\boldsymbol{X}$ are the same is an extreme case of multicollinearity. In this case: The columns of the design matrix $\boldsymbol{X}$ are linearly dependent (the second column is a multiple of the first column). This results in $\boldsymbol{X'X}$ being singular (non-invertible), making it impossible to compute the OLS estimates of the coefficients. Statistically, this means there is no variability in $\boldsymbol{X}$, so the slope $\hat{\boldsymbol{\beta_1}}$ cannot be estimated.
+
+### (c). Using appropriate terminology give a geometric explanation of this situation.
+
+------------------------------------------------------------------------
+
+#### Answer For Question 2 (c) :
+
+In the geometric context: The design matrix $\boldsymbol{X}$ spans a subspace in 3D Euclidean space . Since all values of $\boldsymbol{X}$ are the same, the columns of $\boldsymbol{X}$ are collinear (they lie on the same line).This means the design matrix $\boldsymbol{X}$ does not have full rank, and the OLS solution does not exist because the system of equations is underdetermined.
+
+Geometrically, there are infinitely many solutions to the equation $\hat{\boldsymbol{Y}} = \mathbf{X\hat{\beta}}$, and the OLS method cannot uniquely determine the coefficients $\hat{\boldsymbol{\beta}}$.
+
+## Question 3
+
+Using the data in the provided CSV file (Student_Scores_Dataset.csv), generate a simple linear regression model to describe the relationship between student score (Response) and hours of study (Explanatory variable). Then answer the questions below. Note: Student scores are in the range 0 − 100 and hours of study are in the range 0−10.
+
+###(a) Using the model summary, state the regression equation for student score (3 decimal places for coefficients is sufficient).
+
+```{r}
+#Import the data
+student_data <- read.csv("../data/Student_Scores_Dataset.csv")
+
+# Attach the data for easier access to column names
+attach(student_data)
+
+# Fit the linear regression model
+student_model <- lm(Scores ~ Hours)
+
+# Display the model summary
+summary(student_model)
+```
+
+------------------------------------------------------------------------
+
+#### Answer For Question 3 (a):
+
+From the model summary, the estimated coefficients are:
+
+Intercept ($\hat{\boldsymbol{\beta}}_0$): 5.960
+
+Slope ($\hat{\boldsymbol{\beta}}_1$): 9.914
+
+The regression equation for student scores based on hours of study is: $$Scores = 5.960 + 9.914 × Hours$$
+
+### (b) Using the $\hat{\boldsymbol{\beta_1}}$ coefficient from the model equation, provide an interpretation of this coefficient in relation to the response variable.
+
+------------------------------------------------------------------------
+
+#### Answer For Question 3 (b):
+
+The $\hat{\boldsymbol{\beta}}_1$ coefficient in the regression equation represents the slope of the relationship between the explanatory variable (hours of study) and the response variable (student scores). \(\hat{\boldsymbol{\beta}}_1 = 9.914\) means for every additional hour of study, the student score is expected to increase by 9.914 points, assuming all other factors remain constant.
+
+This indicates a strong positive relationship between hours of study and student scores.
+
+### (c) Using the model summary, do hours of study have a significant effect on student scores?
+
+------------------------------------------------------------------------
+
+#### Answer For Question 3 (c):
+
+To determine whether hours of study have a significant effect on student scores, we examine the p-value associated with the $\hat{\boldsymbol{\beta_1}}$ coefficient in the model summary. The p-value for the $\hat{\boldsymbol{\beta_1}}$ coefficient (Hours) is \< 2e-16, which is much smaller than the typical significance level of 0.05.
+
+This indicates that the effect of hours of study on student scores is statistically significant.
+
+### (d) Again using the model summary, does your model provide a good fit for the observed data?
+
+------------------------------------------------------------------------
+
+#### Answer For Question 3 (d):
+
+To assess whether the model provides a good fit for the observed data, we examine the R-squared value from the model summary.The R-squared value is 0.9653, which means that approximately 96.53% of the variability in student scores is explained by hours of study.
+
+This indicates that the model provides an excellent fit for the observed data.
+
+### (e) Validate your regression model using appropriate residual plots. What do you observe. Is the fit adequate? Do the residuals suggest a better fit is possible?
+
+To validate the regression model, we examine the residual plots to check for patterns or deviations from the assumptions of linear regression.
+
+```{r}
+# Plot residuals vs fitted values
+plot(student_model$fitted.values, student_model$residuals, 
+     xlab = "Fitted Values", ylab = "Residuals", 
+     main = "Residuals vs Fitted Values")
+abline(h = 0, col = "red")
+
+# Plot a Q-Q plot of residuals
+qqnorm(student_model$residuals)
+qqline(student_model$residuals, col = "red")
+```
+------------------------------------------------------------------------
+
+#### Answer For Question 3 (e):
+
+1.Residuals vs Fitted Values:
+
+The residuals are randomly scattered around the horizontal line at 0, indicating no clear pattern. This suggests that the linearity assumption is satisfied.
+
+2.Q-Q Plot:
+
+The residuals closely follow the diagonal line, indicating that they are approximately normally distributed.This suggests that the normality assumption is satisfied.
+
+The residual plots indicate that the fit is adequate. There is no strong evidence to suggest that a better fit is possible.
+
+### (f) Provide a well labelled plot of the observations, also plot the regression line and include the regression equation in the plot title or sub-title.
+
+------------------------------------------------------------------------
+
+#### Answer For Question 3 (f):
+
+```{r}
+# Plot the data points with appropriate labels and title
+plot(Hours, Scores, 
+     xlab = "Hours of Study", ylab = "Student Scores", 
+     main = "Simple Linear Regression: Student Scores vs. Hours of Study")
+
+# Add the regression line to the plot
+abline(student_model, col = "red")
+
+# Display the regression equation as a subtitle in a mathematical format
+mtext(expression(paste("Scores = 5.960 + 9.914 × Hours")), side = 3, line = 0.5, col = "blue")
+                                                                                           
+```
+
+### (g) . Using your regression equation, make student score predictions for the following hours of study, 4.36,6.86, and 8.84 (to 2 decimal places). Why might it not be valid to make predictions outside the hours of study range in your data?
+
+Using the regression equation, we predict student scores for the following hours of study: 4.36, 6.86, and 8.84.
+
+Predictions:
+
+```{r}
+# Define the hours of study
+hours <- c(4.36, 6.86, 8.84)
+
+# Predict student scores
+predict(student_model, newdata = data.frame(Hours = hours))
+```
+------------------------------------------------------------------------
+
+#### Answer For Question 3 (g):
+With my regression equation $Scores = 5.960 + 9.914 × Hours$ ,the predicted scores for 4.36, 6.86, and 8.84 hours of study (rounded to two decimal places) are as follows:
+
+For 4.36 hours, the predicted score is 49.18.<br> 
+For 6.86 hours, the predicted score is 73.97.<br> 
+For 8.84 hours, the predicted score is 93.60.<br>
+
+It may not be valid to make predictions outside the range of hours of study in the data because: 1.The relationship between hours of study and scores may not be linear outside the observed range. 2. There is no data to support the behavior of the relationship beyond the observed range. 3.Extrapolation can lead to unreliable predictions.
+
+
+## Question 4
+
+In this context, we will employ a simple linear regression model to investigate the connections between fertility rate and age in female rhesus macaques from Cayo Santiago.
+
+### (a) Plot mean age specific fertility versus age, making sure to provide a suitable title andaxis labels. Describe any pattern in mean fertility rate as females get older. Is the association between mean fertility and age linear or nonlinear?
+
+```{r}
+#Import the data
+macaque_data <- read.csv("../data/macaque.csv")
+
+#Attach the data for easier access to column names
+attach(macaque_data)
+
+#Plot mean age specific fertility versus age
+plot(age,mean_fertility,
+     xlab = "Female Age", ylab = "Mean fertility Rate", 
+     main = "Mean Fertility Rate vs. Female Age")
+
+
+```
+
+------------------------------------------------------------------------
+
+### Answer for Question 4 (a) :
+
+#### Pattern in mean fertility rate as females get older:
+
+The plot shows that fertility starts relatively low at very young ages (around age 2), then increases rapidly to peak during ages 6-12 (approximately 0.7), and then gradually declines as the macaques get older. After age 22, fertility drops dramatically to very low levels(approximately 0.1).
+
+#### Association between fertility and age:
+
+The association between mean fertility and age is clearly nonlinear. The relationship forms an inverted U-shape with fertility rising in early years, plateauing in middle years, and declining in later years. This nonlinear pattern suggests that a simple linear regression might not be the most appropriate model for this data - a quadratic or other polynomial model might be more suitable.
+
+### (b) Build a simple linear regression model to describe the association between mean age specific fertility rate and age. Provide the linear regression equation (3 decimal places for coefficients is sufficient). What is your interpretation of the equation?
+
+```{r}
+# Fit the linear regression model
+macaque_model <- lm(mean_fertility ~ age)
+
+# Display the model summary
+summary(macaque_model)
+```
+------------------------------------------------------------------------
+#### Answer For Question 4 (b):
+
+From the model summary, the estimated coefficients are:
+
+Intercept ($\hat{\boldsymbol{\beta_0}}$): 0.822
+
+Slope ($\hat{\boldsymbol{\beta_1}}$): -0.019
+
+The regression equation for mean age specific fertility rate based on age is: $$\text{Mean Fertility} = 0.822 - 0.019 × \text{Age}$$
+
+**The intercept (0.822)** represents the predicted mean fertility rate when age is zero, but this doesn’t really have a meaningful interpretation since macaques can’t reproduce at that age. It’s just a result of how the linear model is structured and doesn’t reflect real-world biology. <br>
+
+**The slope (-0.019)** tells us that for each additional year of age, the mean fertility rate drops by about 0.019 units. This confirms that fertility tends to decline as macaques get older. However, the linear model doesn’t fully capture the pattern we saw in the plot, where fertility first increases at younger ages and then levels off before declining. <br>
+
+**The R-squared value (0.3901)** suggests that age only explains about 39% of the variation in fertility rates, meaning the model doesn’t fit the data very well. This is likely because it oversimplifies the relationship, missing key trends like the early rise in fertility and the plateau during prime reproductive years. <br>
+
+Even though **the p-value (0.00189)** shows that age and fertility are statistically linked (since it’s below 0.05), the low R-squared suggests a simple linear model might not be the best choice. A more complex model, like a quadratic regression, could do a better job of capturing how fertility actually changes with age.
+
+### (c) If you plot the model onto the plot from 𝑄4(𝑎) what do you observe? Is the fit adequate? Do the residuals suggest a better fit is possible? Would adding a quadratic term to the model result in a better fit?
+
+```{r}
+# Fit the quadratic model
+macaque_model_quadratic <- lm(mean_fertility ~ age + I(age^2))
+
+# View model summary
+summary(macaque_model_quadratic)
+
+# Create the scatter plot
+plot(age, mean_fertility,
+     xlab = "Female Age", ylab = "Mean Fertility Rate",
+     main = "Mean Fertility Rate vs. Female Age")
+
+# Add the linear regression line
+abline(macaque_model, col = "red", lwd = 2)
+
+# Add the quadratic regression line
+age_range <- seq(min(age), max(age), length.out = 100)
+predicted_quadratic <- predict(macaque_model_quadratic, newdata = data.frame(age = age_range))
+lines(age_range, predicted_quadratic, col = "blue", lwd = 2)
+
+# Add a legend to distinguish the lines
+legend("topright", legend = c("Linear Model", "Quadratic Model"),
+       col = c("red", "blue"), lwd = 2)
+
+
+```
+```{r}
+#Set up a 1x2 layout to display two plots side by side
+par(mfrow = c(1, 2))
+
+# Residual plot for the linear model
+plot(fitted(macaque_model), residuals(macaque_model),
+     xlab = "Fitted Values", ylab = "Residuals",
+     main = "Linear Model Residuals")
+abline(h = 0, col = "red", lwd = 2)
+
+# Residual plot for the quadratic model
+plot(fitted(macaque_model_quadratic), residuals(macaque_model_quadratic),
+     xlab = "Fitted Values", ylab = "Residuals",
+     main = "Quadratic Model Residuals")
+abline(h = 0, col = "blue", lwd = 2)
+
+# Reset the plotting layout to default
+par(mfrow = c(1, 1))
+```
+
+
+#### Answer For Question 4 (c):
+
+##### The observation for fit adequate: 
+The linear model clearly doesn't capture the pattern in the data well. The red line shows a consistent decreasing trend, but the actual data points follow an inverted U-shape pattern. The fit is not adequate. At younger ages (around 3-5 years), the model overestimates fertility. In the middle range (roughly 6-12 years), the model substantially underestimates fertility. Then at older ages (beyond 20 years), the model appears to overestimate fertility again. 
+In contrast, the quadratic model (blue line) aligns much more closely with the observed pattern, providing a better representation of the data's curvature.
+
+##### Residuals:
+The residual plot for the linear model reveals a systematic pattern, with the residuals curving above and below the zero line, suggesting a poor fit. This pattern indicates that the model fails to capture the underlying relationship. Additionally, the spread of residuals is not constant across fitted values, implying heteroscedasticity.
+
+In the quadratic model, the residuals are smaller, more evenly distributed, and randomly scattered around the zero line, which suggests the model captures the structure of the data more effectively and meets the assumptions of linear regression.
+
+##### Adding a Quadratic term to the model:
+
+The comparison of model summaries and residual plots clearly shows that adding a quadratic term (age²) significantly improves model performance, as demonstrated by the following:
+
+1. Increased $R^2$: <br>
+Linear model: $R^2$ =39.01%
+Quadratic model: $R^2$ =88.6%
+This substantial increase indicates that the quadratic model explains much more of the variance in mean fertility rate.
+
+2. Better Residual Distribution: <br>
+The quadratic model eliminates the systematic bias present in the linear model, producing smaller and more random residuals, which improves the model’s validity.
+
+3. Statistical Significance: <br>
+The quadratic term is highly significant with a p-value = 2.40e-08, confirming that it meaningfully contributes to the model.
+
+Adding a quadratic term significantly improves the fit, better capturing the non-linear relationship between female age and fertility. Because of this, the quadratic model is a better choice than the linear one for describing this trend.
+
+### (d) Using your regression equation, make mean age-specific fertility predictions for the following age values, 6.50,14.25 and 18.75 (to 2 decimal places).
+
+```{r}
+# Define the ages for prediction
+ages <- data.frame(age = c(6.50, 14.25, 18.75))
+
+# Predict using the linear model
+linear_predictions <- predict(macaque_model, newdata = ages)
+
+# Predict using the quadratic model
+quadratic_predictions <- predict(macaque_model_quadratic, newdata = ages)
+
+# Display the predictions (rounded to 2 decimal places)
+linear_predictions <- round(linear_predictions, 2)
+quadratic_predictions <- round(quadratic_predictions, 2)
+
+
+# Visualization: Add predictions to the existing plot
+plot(age, mean_fertility,
+     xlab = "Female Age", ylab = "Mean Fertility Rate",
+     main = "Mean Fertility Rate vs. Female Age")
+
+# Add the fitted lines for both models
+age_range <- seq(min(age), max(age), length.out = 100)
+lines(age_range, predict(macaque_model, newdata = data.frame(age = age_range)), col = "red", lwd = 2)
+lines(age_range, predict(macaque_model_quadratic, newdata = data.frame(age = age_range)), col = "blue", lwd = 2)
+
+# Add predictions to the plot
+points(ages$age, linear_predictions, col = "red", pch = 16, cex = 1.2)
+points(ages$age, quadratic_predictions, col = "blue", pch = 16, cex = 1.2)
+
+# Add labels for clarity
+text(ages$age, linear_predictions, labels = linear_predictions, pos = 3, col = "red")
+text(ages$age, quadratic_predictions, labels = quadratic_predictions, pos = 4, col = "blue")
+
+# Add legend
+legend("topright", legend = c("Linear Model", "Quadratic Model"),
+       col = c("red", "blue"), lwd = 2, pch = 16)
+
+```
+
+#### Answer For Question 4 (d):
+
+Predictions for Age-Specific Fertility:
+Using the linear and quadratic regression models, the predicted mean age-specific fertility values for ages 6.50, 14.25, and 18.75 (rounded to two decimal places) are:
+
+```{r}
+# Print the predictions
+data.frame(Age = ages$age, Linear_Model = linear_predictions, Quadratic_Model = quadratic_predictions)
+```
+
+
+##### Interpretation:
+1.Linear Model (Red Points & Line):
+Predicts a constant rate of decline in fertility.
+The linear model consistently underestimates fertility rates between 7 and 22 years because it cannot capture the curved relationship between age and fertility. (e.g., age 14.25).At younger ages (below 7) and older ages (above 22), the model overestimates fertility rates due to its assumption of a constant linear trend. This systematic bias is clearly reflected in the residual plot.
+
+2.Quadratic Model (Blue Points & Line):
+Captures the non-linear (inverted U-shaped) relationship.
+Provides more realistic predictions for both younger and older ages.
+
+The quadratic model better captures the shape of the data, especially at extreme ages, making it a more accurate predictor of fertility.
